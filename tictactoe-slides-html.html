@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Multi-Dimensional Tic-Tac-Toe — Presentation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0f172a;color:#e2e8f0;font-family:'Inter','Segoe UI',system-ui,sans-serif;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+a{color:#6366f1;text-decoration:none}
+code{color:#c084fc;background:#1e1b4b;padding:2px 6px;border-radius:4px;font-size:13px}
+.progress{height:3px;background:#1e293b;flex-shrink:0}
+.progress-bar{height:3px;background:linear-gradient(90deg,#6366f1,#ec4899);border-radius:2px;transition:width .3s}
+.slides{flex:1;overflow:auto;position:relative}
+.slide{display:none;padding:48px;min-height:100%}
+.slide.active{display:block}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-top:1px solid #1e293b;flex-shrink:0}
+.nav button{padding:8px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+.btn-prev{border:1px solid #334155;background:#1e293b;color:#94a3b8}
+.btn-prev:disabled{background:#0f172a;color:#334155;cursor:default}
+.btn-next{border:none;background:linear-gradient(135deg,#6366f1,#a855f7);color:#fff;font-weight:600}
+.btn-next:disabled{background:#1e293b;color:#334155;cursor:default}
+.dots{display:flex;gap:6px}
+.dot{width:8px;height:8px;border-radius:4px;background:#334155;cursor:pointer;transition:all .2s}
+.dot.active{width:24px;background:#6366f1}
+.slide-num{font-size:12px;color:#6366f1;font-weight:700;letter-spacing:3px;margin-bottom:4px}
+.slide-title{font-size:30px;font-weight:700;margin-bottom:0}
+.slide-bar{width:40px;height:3px;background:linear-gradient(90deg,#6366f1,#ec4899);margin-top:10px;border-radius:2px;margin-bottom:24px}
+.slide-desc{color:#94a3b8;font-size:15px;line-height:1.7;margin-bottom:24px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.grid6{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.card{background:#1e293b;border-radius:10px;padding:14px 16px;border:1px solid #334155}
+.card-title{font-weight:600;color:#e2e8f0;font-size:14px;margin-bottom:6px}
+.card-desc{color:#94a3b8;font-size:12px;line-height:1.6}
+.card-icon{font-size:22px;margin-bottom:4px}
+.ba-label{font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.ba-row{display:flex;align-items:center;gap:8px}
+.ba-before{color:#f87171;font-size:12px;flex:1;background:#1e0b0b;padding:4px 8px;border-radius:4px}
+.ba-arrow{color:#475569}
+.ba-after{color:#34d399;font-size:12px;flex:1;background:#0b1e14;padding:4px 8px;border-radius:4px}
+.code-block{background:#0f172a;border-radius:12px;padding:24px;font-family:'Fira Code',monospace;font-size:13px;line-height:1.9;border:1px solid #1e293b;overflow-x:auto;margin-bottom:20px}
+.code-comment{color:#64748b}
+.code-keyword{color:#c084fc}
+.code-highlight{color:#fbbf24}
+.code-green{color:#34d399}
+.board-example{text-align:center}
+.board-example-title{font-size:20px;font-weight:700;margin-bottom:4px}
+.board-example-grid{display:inline-grid;gap:2px;margin:8px 0}
+.board-example-cell{background:#0f172a;border-radius:3px;border:1px solid #334155}
+.board-example-info{font-size:11px;color:#94a3b8}
+.board-example-lines{font-size:11px;color:#6366f1}
+.feat-card{background:#1e293b;border-radius:10px;padding:16px;border-left:3px solid}
+.feat-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.feat-card-icon{font-size:18px}
+.feat-card-title{font-weight:600;color:#e2e8f0;font-size:14px}
+.ui-block{background:#1e293b;border-radius:10px;padding:14px;display:flex;gap:14px;align-items:center;margin-bottom:12px}
+.ui-block-name{font-family:monospace;font-weight:700;font-size:14px}
+.ui-block-role{color:#64748b;font-size:12px;margin-left:8px}
+.ui-block-desc{color:#94a3b8;font-size:12px;margin-left:auto;text-align:right;max-width:340px}
+.ui-indent{padding-left:28px;border-left:3px solid #334155;margin-left:14px}
+.stat-card{text-align:center}
+.stat-num{font-size:28px;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat-label{color:#64748b;font-size:11px;margin-top:4px}
+.seq-row{text-align:center;font-family:monospace;font-size:11px;padding:4px 0;border-top:1px dashed #1e293b}
+.seq-row:first-child{border:none}
+.summary-card{text-align:center}
+.link-btn{display:inline-block;color:#6366f1;font-size:14px;background:#6366f118;padding:8px 20px;border-radius:20px;border:1px solid #6366f133}
+.link-btn-big{display:inline-block;color:#fff;font-size:15px;background:linear-gradient(135deg,#6366f1,#ec4899);padding:12px 32px;border-radius:24px;font-weight:600}
+.center{text-align:center}
+.model-before{background:#1e293b;border-radius:10px;padding:18px;font-family:monospace;font-size:12px;color:#94a3b8;line-height:2;border:1px solid #334155}
+.model-after{background:#0f2b1a;border-radius:10px;padding:18px;font-family:monospace;font-size:12px;color:#86efac;line-height:2;border:1px solid #166534}
+.model-new{color:#fbbf24}
+.model-label-before{font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.model-label-after{font-size:12px;color:#22c55e;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.boards-row{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.board-demo{text-align:center}
+.board-demo-label{font-size:12px;color:#64748b;margin-bottom:6px}
+.board-demo-meta{font-size:10px;color:#475569;margin-top:4px}
+.board-demo-grid{display:inline-grid;gap:2px}
+.board-demo-cell{border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;border:1px solid #334155}
+.seq-actors{display:flex;justify-content:space-between;margin-bottom:20px}
+.seq-actor{background:#1e293b;border-radius:8px;padding:8px 20px;color:#e2e8f0;font-size:13px;font-weight:600;border:1px solid #334155;text-align:center;flex:1;margin:0 8px}
+@media(max-width:700px){.grid2,.grid3,.grid6{grid-template-columns:1fr}.slide{padding:24px}}
+</style>
+</head>
+<body>
+
+<div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="slides" id="slides">
+
+<!-- SLIDE 0: TITLE -->
+<div class="slide active" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px">
+  <div style="font-size:12px;letter-spacing:6px;color:#64748b;text-transform:uppercase;margin-bottom:20px">Project Presentation</div>
+  <div style="display:grid;grid-template-columns:repeat(3,56px);gap:6px;margin-bottom:32px" id="titleGrid"></div>
+  <h1 style="font-size:44px;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:8px">Multi-Dimensional<br>Tic-Tac-Toe</h1>
+  <p style="color:#94a3b8;font-size:18px;margin:12px 0 4px">From 3×3 to N×N — A Configurable Board Engine</p>
+  <div style="width:60px;height:3px;background:linear-gradient(90deg,#6366f1,#ec4899);margin:20px auto;border-radius:2px"></div>
+  <a href="https://tic-tac-toe-sp-2026-1.onrender.com/" target="_blank" class="link-btn">🔗 Live Demo →</a>
+</div>
+
+<!-- SLIDE 1: WHAT CHANGED -->
+<div class="slide">
+  <div class="slide-num">01</div>
+  <h2 class="slide-title">What Changed?</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The game was converted from a fixed 3×3 board to a fully configurable N×N board supporting sizes from 1×1 to 7×7 — touching every layer of the stack.</p>
+  <div class="grid2" id="beforeAfterGrid"></div>
+</div>
+
+<!-- SLIDE 2: CORE ENGINE -->
+<div class="slide">
+  <div class="slide-num">02</div>
+  <h2 class="slide-title">Core Engine: Dynamic Win Lines</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The heart of the change: <code>generateWinLines(size)</code> replaces all hardcoded win conditions with a mathematical generator.</p>
+  <div class="code-block">
+    <span class="code-comment">// For any NxN board, generate all winning lines:</span><br>
+    <span class="code-keyword">Rows:</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;row × size + col &nbsp;<span class="code-comment">→ N lines of N indices</span><br>
+    <span class="code-keyword">Columns:</span>&nbsp;&nbsp;&nbsp;row × size + col &nbsp;<span class="code-comment">→ N lines of N indices</span><br>
+    <span class="code-keyword">Main diag:</span>&nbsp;i × size + i &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">→ 1 line of N indices</span><br>
+    <span class="code-keyword">Anti diag:</span>&nbsp;i × size + (N-1-i) &nbsp;<span class="code-comment">→ 1 line of N indices</span><br><br>
+    <span class="code-comment">// Total: 2N + 2 win lines, each containing N indices</span>
+  </div>
+  <div class="grid3" id="boardExamples"></div>
+</div>
+
+<!-- SLIDE 3: DATA MODEL -->
+<div class="slide">
+  <div class="slide-num">03</div>
+  <h2 class="slide-title">Extended GameState</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The GameState interface grew to support the new board engine plus two new features: undo and takeback requests.</p>
+  <div class="grid2" style="margin-bottom:20px">
+    <div>
+      <div class="model-label-before">Before</div>
+      <div class="model-before">{<br>&nbsp;&nbsp;board: <span style="color:#f87171">[Cell × 9]</span><br>&nbsp;&nbsp;currentPlayer: "X" | "O"<br>}</div>
+    </div>
+    <div>
+      <div class="model-label-after">After</div>
+      <div class="model-after">{<br>&nbsp;&nbsp;board: <span class="code-green">Cell[]</span> <span class="code-comment">// size²</span><br>&nbsp;&nbsp;currentPlayer<br>&nbsp;&nbsp;<span class="model-new">boardSize: 1–7</span> <span class="code-comment">// NEW</span><br>&nbsp;&nbsp;<span class="model-new">id: string</span><br>&nbsp;&nbsp;<span class="model-new">winner: cached</span><br>&nbsp;&nbsp;<span class="model-new">moveHistory: Move[]</span><br>&nbsp;&nbsp;<span class="model-new">takebackRequest</span><br>}</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="feat-card" style="border-left-color:#6366f1">
+      <div class="feat-card-head"><span class="feat-card-icon">↩️</span><span class="feat-card-title">Undo / Move History</span></div>
+      <div class="card-desc">Every move is recorded. undoLastMove() pops the last entry and restores the previous board state.</div>
+    </div>
+    <div class="feat-card" style="border-left-color:#ec4899">
+      <div class="feat-card-head"><span class="feat-card-icon">🤝</span><span class="feat-card-title">Takeback Requests</span></div>
+      <div class="card-desc">A player can request a takeback. The opponent gets a prompt to approve or deny. Prevents abuse while allowing sportsmanship.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: UI ARCHITECTURE -->
+<div class="slide">
+  <div class="slide-num">04</div>
+  <h2 class="slide-title">UI Architecture</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The frontend was restructured from a single view into a multi-component system with lobby navigation, size selection, and real-time updates.</p>
+  <div class="ui-block" style="border-left:4px solid #6366f1"><div><span class="ui-block-name" style="color:#6366f1">App.tsx</span><span class="ui-block-role">Root</span></div><div class="ui-block-desc">View state management (lobby ↔ game), API integration, board size selector</div></div>
+  <div class="ui-indent">
+    <div class="ui-block" style="border-left:4px solid #14b8a6"><div><span class="ui-block-name" style="color:#14b8a6">GameList.tsx</span><span class="ui-block-role">Lobby</span></div><div class="ui-block-desc">Size picker dropdown (1–7), game cards, create / delete / select</div></div>
+    <div class="ui-block" style="border-left:4px solid #ec4899"><div><span class="ui-block-name" style="color:#ec4899">GameView.tsx</span><span class="ui-block-role">Game Board</span></div><div class="ui-block-desc">Dynamic N×N grid, player selection, turn indicator, takeback UI, WebSocket</div></div>
+    <div class="ui-block" style="border-left:4px solid #f59e0b"><div><span class="ui-block-name" style="color:#f59e0b">GameBoardView.tsx</span><span class="ui-block-role">Renderer</span></div><div class="ui-block-desc">Pure renderer — board[] + boardSize → NxN grid. Reusable everywhere.</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 5: DYNAMIC RENDERING -->
+<div class="slide">
+  <div class="slide-num">05</div>
+  <h2 class="slide-title">Dynamic Board Rendering</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The board renderer converts a flat array into an N×N grid using boardSize to slice rows and calculate cell indices.</p>
+  <div class="code-block">
+    <span class="code-comment">// Key rendering logic</span><br>
+    <span class="code-keyword">const</span> rows = Array.from({ length: size }, (_, i) =&gt; i);<br><br>
+    rows.map(row =&gt; (<br>
+    &nbsp;&nbsp;&lt;tr&gt;<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;board<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.<span class="code-highlight">slice(row * size, row * size + size)</span> &nbsp;<span class="code-comment">// N cells per row</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.map((cell, col) =&gt; {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">const</span> index = <span class="code-highlight">row * size + col</span>; &nbsp;<span class="code-comment">// flat index</span><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> &lt;td onClick={<span class="code-green">() =&gt; makeMove(index)</span>}&gt;{cell}&lt;/td&gt;<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    &nbsp;&nbsp;&lt;/tr&gt;<br>
+    ))
+  </div>
+  <div class="grid2">
+    <div class="card"><div class="ba-label">Responsive Sizing</div><div style="font-family:monospace;font-size:13px">Table width: <span class="code-highlight">size × 80px</span><br>Board dims: <span class="code-highlight">size × 16px</span> (mini view)</div></div>
+    <div class="card"><div class="ba-label">Visual Feedback</div><div class="card-desc" style="font-size:13px">Board dims to <span class="code-highlight">opacity: 0.6</span> when it's not your turn. Clear visual cue without blocking the view.</div></div>
+  </div>
+</div>
+
+<!-- SLIDE 6: BOARD SIZES -->
+<div class="slide">
+  <div class="slide-num">06</div>
+  <h2 class="slide-title">Board Sizes in Action</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">Every size from 1×1 to 7×7, rendered with the same dynamic engine. The game scales gracefully.</p>
+  <div class="boards-row" id="allBoards"></div>
+  <div class="center" style="margin-top:28px"><a href="https://tic-tac-toe-sp-2026-1.onrender.com/" target="_blank" class="link-btn">🎮 Try it live →</a></div>
+</div>
+
+<!-- SLIDE 7: WEBSOCKETS -->
+<div class="slide">
+  <div class="slide-num">07</div>
+  <h2 class="slide-title">Real-Time with WebSockets</h2>
+  <div class="slide-bar"></div>
+  <p class="slide-desc">The game uses WebSockets for instant state synchronization. Every move, reset, and takeback broadcasts to all connected clients.</p>
+  <div style="background:#0f172a;border-radius:12px;padding:24px;margin-bottom:24px;border:1px solid #1e293b">
+    <div class="seq-actors"><div class="seq-actor">Player A</div><div class="seq-actor">Server</div><div class="seq-actor">Player B</div></div>
+    <div id="seqRows"></div>
+  </div>
+  <div class="grid3" id="statCards"></div>
+</div>
+
+<!-- SLIDE 8: SUMMARY -->
+<div class="slide" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:48px">
+  <div class="slide-num">08</div>
+  <h2 class="slide-title" style="text-align:center">Summary</h2>
+  <div class="slide-bar" style="margin-left:auto;margin-right:auto"></div>
+  <div class="grid3" style="margin-bottom:32px;width:100%;max-width:600px" id="summaryGrid"></div>
+  <div style="width:60px;height:3px;background:linear-gradient(90deg,#6366f1,#ec4899);margin:8px auto 24px;border-radius:2px"></div>
+  <a href="https://tic-tac-toe-sp-2026-1.onrender.com/" target="_blank" class="link-btn-big">🎮 Play the Live Demo</a>
+  <p style="color:#475569;font-size:12px;margin-top:16px">Built with React + TypeScript + Node.js + WebSockets</p>
+</div>
+
+</div>
+
+<div class="nav">
+  <button class="btn-prev" id="prevBtn" onclick="go(-1)">← Previous</button>
+  <div class="dots" id="dots"></div>
+  <button class="btn-next" id="nextBtn" onclick="go(1)">Next →</button>
+</div>
+
+<script>
+let cur=0;
+const all=document.querySelectorAll('.slide');
+const total=all.length;
+
+function render(){
+  all.forEach((s,i)=>{s.classList.toggle('active',i===cur);s.style.display=i===cur?(i===0||i===total-1?'flex':'block'):'none'});
+  document.getElementById('progressBar').style.width=((cur+1)/total*100)+'%';
+  document.getElementById('prevBtn').disabled=cur===0;
+  document.getElementById('nextBtn').disabled=cur===total-1;
+  const d=document.getElementById('dots');
+  d.innerHTML='';
+  for(let i=0;i<total;i++){const dot=document.createElement('div');dot.className='dot'+(i===cur?' active':'');dot.onclick=()=>{cur=i;render()};d.appendChild(dot)}
+}
+
+function go(dir){cur=Math.max(0,Math.min(total-1,cur+dir));render()}
+
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(1);if(e.key==='ArrowLeft')go(-1)});
+
+// Build title grid
+const tg=document.getElementById('titleGrid');
+["X","O","X","","X","","O","","O"].forEach(c=>{const d=document.createElement('div');d.style.cssText=`width:56px;height:56px;border-radius:10px;background:${c?'linear-gradient(135deg,#6366f1,#a855f7)':'#1e293b'};display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff;border:1px solid #334155`;d.textContent=c;tg.appendChild(d)});
+
+// Build before/after
+const baData=[["Board Type","Fixed 9-element tuple","Dynamic Cell[] array"],["Win Detection","8 hardcoded lines","Dynamically generated"],["Game Creation","Hardcoded 9 nulls","size × size cells"],["Rendering","Fixed 3×3 table","N×N grid from boardSize"],["Position Range","0 – 8","0 – (size²−1)"],["UI Structure","Single view","Lobby + Game + Size Picker"]];
+const bag=document.getElementById('beforeAfterGrid');
+baData.forEach(([l,b,a])=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<div class="ba-label">${l}</div><div class="ba-row"><span class="ba-before">✗ ${b}</span><span class="ba-arrow">→</span><span class="ba-after">✓ ${a}</span></div>`;bag.appendChild(d)});
+
+// Build board examples
+const beg=document.getElementById('boardExamples');
+[[3,"3×3","8 win lines","9 cells"],[4,"4×4","10 win lines","16 cells"],[5,"5×5","12 win lines","25 cells"]].forEach(([s,l,li,c])=>{const d=document.createElement('div');d.className='card board-example';const cs=s<=3?24:18;let g='';for(let i=0;i<s*s;i++)g+=`<div class="board-example-cell" style="width:${cs}px;height:${cs}px"></div>`;d.innerHTML=`<div class="board-example-title">${l}</div><div class="board-example-grid" style="grid-template-columns:repeat(${s},${cs}px)">${g}</div><div class="board-example-info">${c}</div><div class="board-example-lines">${li}</div>`;beg.appendChild(d)});
+
+// Build all boards (slide 6)
+const ab=document.getElementById('allBoards');
+const demo3=["X",null,"O",null,"X",null,null,null,"O"];
+const demo5=[null,null,"X",null,null,null,"O",null,null,null,"X",null,"O",null,null,null,null,null,"X",null,null,null,null,null,null];
+for(let s=1;s<=7;s++){const w=document.createElement('div');w.className='board-demo';const cs=Math.max(20,44-s*4);let g='';for(let i=0;i<s*s;i++){const v=s===3?demo3[i]:s===5?demo5[i]:null;const bg=v==='X'?'#6366f1':v==='O'?'#ec4899':'#1e293b';g+=`<div class="board-demo-cell" style="width:${cs}px;height:${cs}px;background:${bg};font-size:${Math.max(8,16-s)}px">${v||''}</div>`}
+w.innerHTML=`<div class="board-demo-label">${s}×${s}</div><div class="board-demo-grid" style="grid-template-columns:repeat(${s},${cs}px)">${g}</div><div class="board-demo-meta">${s*s} cells · ${2*s+2} lines</div>`;ab.appendChild(w)}
+
+// Sequence rows
+const sr=document.getElementById('seqRows');
+[["POST /games/:id/move { pos:12, player:'X' }","#3b82f6"],["Validate → Update board → Check win (4×4 = 10 lines)","#fbbf24"],["← 200 OK { board, turn:'O', status:'inprog' }","#64748b"],["WS → game:update (broadcast to room)","#ec4899"],["WS → game:update (both players re-render)","#ec4899"]].forEach(([t,c])=>{const d=document.createElement('div');d.className='seq-row';d.style.color=c;d.textContent=t;sr.appendChild(d)});
+
+// Stat cards
+const sc=document.getElementById('statCards');
+[["< 50ms","Gesture to render"],["2N + 2","Win lines checked"],["N²","Cells per board"]].forEach(([n,l])=>{const d=document.createElement('div');d.className='card stat-card';d.innerHTML=`<div class="stat-num">${n}</div><div class="stat-label">${l}</div>`;sc.appendChild(d)});
+
+// Summary cards
+const sg=document.getElementById('summaryGrid');
+[["🧮","Dynamic Engine","One algorithm handles 1×1 through 7×7"],["↩️","Undo System","Full move history with takeback requests"],["⚡","Real-Time","WebSocket sync for multiplayer"],["🏠","Lobby System","Create, browse, join, delete games"],["📐","Size Picker","Choose board size at creation time"],["🎨","Responsive UI","Board scales visually to any N"]].forEach(([i,t,d])=>{const el=document.createElement('div');el.className='card summary-card';el.innerHTML=`<div class="card-icon">${i}</div><div class="card-title">${t}</div><div class="card-desc">${d}</div>`;sg.appendChild(el)});
+
+render();
+</script>
+</body>
+</html>
